@@ -440,7 +440,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13e122c462537f247a955e2850126f88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  diaplayFridGizmos: 0
+  diaplayGridGizmos: 1
   gridWorldSize: {x: 100, y: 100}
   nodeRadius: 0.5
   walkableRegions:
