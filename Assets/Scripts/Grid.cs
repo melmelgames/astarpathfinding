@@ -11,12 +11,22 @@ public class Grid : MonoBehaviour
     private int gridSizeY;
     public Vector2 gridWorldSize;
     public float nodeRadius;
+    public TerrainType[] walkableRegions;
+    private LayerMask walkableMask;
+    private Dictionary<int, int> walkableRegionsDictionary = new Dictionary<int, int>();
+
     public LayerMask unwalkableMask;
 
     private void Awake(){
         nodeDiameter = 2 * nodeRadius;
         gridSizeX = Mathf.RoundToInt(gridWorldSize.x/nodeDiameter);
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y/nodeDiameter);
+
+        foreach(TerrainType region in walkableRegions){
+            walkableMask.value |= region.TerrainMask.value;
+            walkableRegionsDictionary.Add((int)Mathf.Log(region.TerrainMask.value, 2), region.TerrainPenalty);
+        }
+
         CreateGrid();
 
     }
@@ -34,7 +44,19 @@ public class Grid : MonoBehaviour
             for(int y = 0; y < gridSizeY; y++){
                 Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
                 bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask));
-                grid[x,y] = new Node(walkable, worldPoint, x, y);
+
+                int movementPenalty = 0;
+
+                if(walkable){
+                    Ray ray= new Ray(worldPoint + Vector3.up * 50, Vector3.down);
+                    RaycastHit hit;
+                    if(Physics.Raycast(ray.origin, ray.direction, out hit, 100, walkableMask)){
+                        walkableRegionsDictionary.TryGetValue(hit.collider.gameObject.layer, out movementPenalty);
+                    }
+                }
+
+
+                grid[x,y] = new Node(walkable, worldPoint, x, y, movementPenalty);
         }
 
         }
@@ -84,5 +106,10 @@ public class Grid : MonoBehaviour
                     Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter-0.1f));
                 }
             }
+    }
+    [System.Serializable]
+    public class TerrainType{
+        public LayerMask TerrainMask;
+        public int TerrainPenalty;
     }
 }
