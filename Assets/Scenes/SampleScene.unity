@@ -555,6 +555,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   diaplayGridGizmos: 0
+  blurWeightStrenght: 5
+  obstacleProximityPenalty: 30
+  unwalkableMask:
+    serializedVersion: 2
+    m_Bits: 64
   gridWorldSize: {x: 100, y: 100}
   nodeRadius: 0.5
   walkableRegions:
@@ -566,10 +571,6 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 256
     TerrainPenalty: 20
-  obstacleProximityPenalty: 30
-  unwalkableMask:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!4 &536681147
 Transform:
   m_ObjectHideFlags: 0

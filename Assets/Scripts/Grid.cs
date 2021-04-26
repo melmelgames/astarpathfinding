@@ -5,20 +5,20 @@ using UnityEngine;
 public class Grid : MonoBehaviour
 {
     public bool diaplayGridGizmos;
+    public int blurWeightStrenght;
+    public int obstacleProximityPenalty = 30;
+    public LayerMask unwalkableMask;
+    public Vector2 gridWorldSize;
+    public float nodeRadius;
+    public TerrainType[] walkableRegions;
     private Node[,] grid;
     private float nodeDiameter;
     private int gridSizeX;
     private int gridSizeY;
-    public Vector2 gridWorldSize;
-    public float nodeRadius;
-    public TerrainType[] walkableRegions;
-    public int obstacleProximityPenalty = 30;
     private LayerMask walkableMask;
     private Dictionary<int, int> walkableRegionsDictionary = new Dictionary<int, int>();
     private int penaltyMax = int.MinValue;
     private int penaltyMin = int.MaxValue;
-
-    public LayerMask unwalkableMask;
 
     private void Awake(){
         nodeDiameter = 2 * nodeRadius;
@@ -64,7 +64,7 @@ public class Grid : MonoBehaviour
                 grid[x,y] = new Node(walkable, worldPoint, x, y, movementPenalty);
             }
         }
-        BlurPenaltyMap(5);
+        BlurPenaltyMap(blurWeightStrenght);
     }
 
     private void BlurPenaltyMap(int blurSize){
